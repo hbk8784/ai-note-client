@@ -3,13 +3,16 @@ import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { auth } from "../lib/auth";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function registerHandler(
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> {
+    setIsLoading(true);
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
@@ -29,6 +32,8 @@ const RegisterPage = () => {
       const errorMessage =
         error instanceof Error ? error.message : "Registration failed";
       toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -100,12 +105,18 @@ const RegisterPage = () => {
                 />
               </div>
 
-              <button
-                type="submit"
-                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 px-4 rounded-xl transition-all duration-300 shadow-lg font-semibold"
-              >
-                Register Now
-              </button>
+              {isLoading ? (
+                <div className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 px-4 rounded-xl transition-all duration-300 shadow-lg font-semibold">
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white mx-auto"></div>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 px-4 rounded-xl transition-all duration-300 shadow-lg font-semibold"
+                >
+                  Register Now
+                </button>
+              )}
             </form>
           </section>
 
